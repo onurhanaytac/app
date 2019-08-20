@@ -4,7 +4,7 @@
   "description": "app starter",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/onurhanaytac/app/issues"
   },
-  "homepage": "https://github.com/onurhanaytac/app#readme"
+  "homepage": "https://github.com/onurhanaytac/app#readme",
+  "dependencies": {
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.9"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
 }
