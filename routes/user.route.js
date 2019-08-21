@@ -1,26 +1,46 @@
 const router = require('express').Router();
-const UserModel = require('../models/user.model');
 const UserService = require('../services/user.service');
+const auth = require('../middlewares/auth');
 
+router.post('/create', (req, res) => {
+    const user = UserService.create(req.body);
 
-router.get('/GetUsers', (req, res) => {
-    res.send([{userId: '_fndjsvgsd139fhb32g2v29'}]);
+    user.then(_user => {
+        res.status(200).send({ success: true, _user });
+    }).catch(error => {
+        return res.status(400).send({ success: false, error: error.message });
+    });
 });
 
-router.get('/AddUser', (req, res) => {
-    const saveObj = {
-        name: 'Onurhan',
-        email: 'onurhan@gmail.com',
-        password: 'Onurhan123@'
-    }
-    
-    UserService.addUser(saveObj, (err, _res) => {
-        if (err) {
-            return console.log(err);
-        }
-        res.status(500).send({ success: true, saveObj });
-    });
+router.get('/read', auth, (req, res) => {
+    const users = UserService.read(req.query);
 
+    users.then(_users => {
+        res.status(200).send({ success: true, _users });
+    }).catch(error => {
+        console.log("here error")
+        return res.status(400).send({ success: false, error: error.message });
+    });
+});
+
+router.post('/update', (req, res) => {
+    const user = UserService.update(req.body);
+    
+    user.then(_user => {
+        res.status(200).send({ success: true, _user });
+    }).catch(error => {
+        return res.status(400).send({ success: false, error: error.message });
+    });
+});
+
+router.post('/destroy', (req, res) => {
+    const user = UserService.destroy(req.body);
+    
+    user.then(_user => {
+        res.status(200).send({ success: true, _user });
+    }).catch(error => {
+        return res.status(400).send({ success: false, error: error.message });
+    });
 });
 
 module.exports = router;

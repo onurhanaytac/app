@@ -13,7 +13,7 @@ app.use(express.json());
 app.use('/api', api);
 
 
-mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true }, () => {
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useFindAndModify: false }, () => {
     console.log('Connected to DB');
 });
 

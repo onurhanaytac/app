@@ -17,8 +17,11 @@
   },
   "homepage": "https://github.com/onurhanaytac/app#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
     "mongoose": "^5.6.9"
   },
   "devDependencies": {
