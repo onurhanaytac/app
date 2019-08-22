@@ -1,0 +1,54 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Düzenle</mat-card-title>
+    <span class="spacer"></span>
+    <button mat-icon-button (click)="dialogRef.close()" style="margin: 4.5px;"><mat-icon>close</mat-icon></button>
+  </mat-card-header>
+  <mat-card-content>
+
+
+    <ng-container *ngFor="let field of data.fields">
+      <ng-container *ngIf="(field.editable || field.required) && field.display">
+        <ng-container [ngSwitch]="field.type">
+          <ng-container *ngSwitchCase="'number'">
+            <mat-form-field>
+              <input matInput [(ngModel)]="data.dataItem[field.name]" (change)="onChangeEditableField($event, data.dataItem, data, field)" required class="form-control" type="number" [ngStyle]="{'text-align': field.align ? field.align : 'left'}" placeholder="{{field.title}}">
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngSwitchCase="'string'">
+            <mat-form-field>
+              <input matInput [(ngModel)]="data.dataItem[field.name]" (change)="onChangeEditableField($event, data.dataItem, data, field)" required class="form-control" [ngStyle]="{'text-align': field.align ? field.align : 'left'}" placeholder="{{field.title}}">
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngSwitchCase="'date'">
+            <mat-form-field>
+              <input matInput [matDatepicker]="picker" [(ngModel)]="data.dataItem[field.name]" class="form-control" (dateChange)="onChangeEditableField($event, data.dataItem, data, field)" [ngStyle]="{'text-align': field.align ? field.align : 'left'}" placeholder="{{field.title}}">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngSwitchCase="'enum'">
+            <mat-form-field>
+              <mat-select [(ngModel)]="data.dataItem[field.name]" placeholder="{{field.title}}">
+                <mat-option *ngFor="let selectDataItem of selectDataSources[field.name]" [value]="selectDataItem[field.name]"> {{ selectDataItem.name }} </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngSwitchCase="'boolean'">
+              <mat-checkbox [(ngModel)]="data.dataItem[field.name]" (change)="onChangeEditableField($event, data.dataItem, [data.dataItem], field.name)"></mat-checkbox>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            <mat-form-field>
+              <input matInput [(ngModel)]="data.dataItem[field.name]" required class="form-control" (change)="onChangeEditableField($event, data.dataItem, data, field)" [ngStyle]="{'text-align': field.align ? field.align : 'left'}" placeholder="{{field.title}}">
+            </mat-form-field>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+
+  </mat-card-content>
+  <mat-card-actions>
+      <button mat-button (click)="onClickButtonSave($event, data.dataItem)">KAYDET</button>
+  </mat-card-actions>
+</mat-card>

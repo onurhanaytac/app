@@ -18,7 +18,7 @@ router.post('/login', (req, res) => {
     const login = AuthService.login(_.pick(req.body, [ 'email', 'password' ]));
 
     login.then(login => {
-        res.header('auth-token', login.token);
+        res.cookie('auth-token', login.token);
         res.status(200).send({ success: true, user: _.pick(login.user, [ '_id', 'email', 'name' ]) });
     }).catch(error => {
         return res.status(400).send({ success: false, error: error.message });

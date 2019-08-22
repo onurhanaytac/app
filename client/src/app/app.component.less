@@ -1,0 +1,36 @@
+@border-width: 4px;
+
+router-outlet {
+	width: 100%;
+	height: 100%;
+}
+
+.main {
+	&-toolbar {
+	  position: fixed;
+	  /* Make sure the toolbar will stay on top of the content as it scrolls past. */
+	  z-index: 2;
+		top: 0;
+		left: 0;
+	}
+
+	&-sidenav-container {
+		height: 100%;
+	}
+}
+
+mat-nav-list {
+	min-width: 240px;
+}
+
+.mat-list-item.active {
+	border-left: @border-width solid red;
+	width: calc(100% - @border-width);
+}
+
+.mat-progress-bar {
+	position: absolute;
+	top: 64px;
+	left: 0;
+	z-index: 2;
+}

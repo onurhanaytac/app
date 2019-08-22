@@ -1,0 +1,179 @@
+<div #sidenavContainer class="mat-elevation-z8 app-table-container" [style.height]="height">
+  <mat-toolbar *ngIf="properties.toolbar && properties.toolbar.length">
+    <mat-toolbar-row>
+      <ng-container *ngFor="let toolbarItem of properties.toolbar;">
+        <mat-form-field appearance="legacy" floatLabel="never" *ngIf="toolbarItem.action == 'search'" class="toolbar-search">
+          <mat-label>Ara...</mat-label>
+          <input matInput [(ngModel)]="pageOptions.searchText" (keydown)="onSearchKeyPress($event)">
+          <mat-icon matPrefix>search</mat-icon>
+        </mat-form-field>
+
+        <span class="spacer" *ngIf="toolbarItem.action == 'search'"></span>
+
+        <button mat-mini-fab *ngIf="toolbarItem.action == 'add'" color="accent" (click)="toolbarItem.onClick ? toolbarItem.onClick($event) == onClickButtonAddNewDataItem($event) : onClickButtonAddNewDataItem($event);">
+          <mat-icon>{{ toolbarItem.action == 'add' && newRow ? 'close' : toolbarItem.action }}</mat-icon>
+        </button>
+
+        <button mat-mini-fab *ngIf="toolbarItem.action != 'add' && toolbarItem.action != 'search'" color="accent" (click)="toolbarItem.onClick ? toolbarItem.onClick($event) : null;">
+          <mat-icon>{{ toolbarItem.action }}</mat-icon>
+        </button>
+      </ng-container>
+
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div [class]="'table-wrapper'" [style.height]="tableHeight">
+    <table mat-table [dataSource]="data">
+      <ng-container *ngFor="let field of properties.fields">
+        <ng-container *ngIf="field && field.display">
+          <ng-container matColumnDef="{{field.name}}" [sticky]="field.sticky" [stickyEnd]="field.stickyEnd">
+    
+            <th mat-header-cell *matHeaderCellDef [ngStyle]="{'text-align': field.align ? field.align : 'left'}"> {{field.title}} </th>
+    
+            <td mat-cell *matCellDef="let dataItem" [ngClass]="field && field.name == 'action' ? 'grid-action-button' : ''" [ngStyle]="{'text-align': field.align ? field.align : 'left'}">
+              <ng-container *ngIf="field.name != 'action'">
+
+                <ng-container *ngIf="!setEditable(field.editable, dataItem) || properties.editable.mode === 'popup'">
+                  <ng-container [ngSwitch]="field.type">
+                    <ng-container *ngSwitchCase="'date'">
+                      <input matInput [matDatepicker]="picker" [(ngModel)]="dataItem[field.name]" [disabled]="true" style="color: rgba(0,0,0,.87);" [ngStyle]="{'text-align': field.align ? field.align : 'left'}">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'enum'">
+                      {{ getEnumValue(selectDataSources, field, dataItem) }}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'boolean'">
+                        <mat-checkbox [(ngModel)]="dataItem[field.name]" [disabled]="true"></mat-checkbox>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>{{ dataItem[field.name] }}</ng-container>
+                  </ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="setEditable(field.editable, dataItem) && (properties.editable.mode === 'inline' || properties.editable.mode === 'multiple')">
+                  <ng-container [ngSwitch]="field.type">
+                    <ng-container *ngSwitchCase="'number'">
+                      <mat-form-field>
+                        <input matInput [(ngModel)]="dataItem[field.name]" (change)="onChangeEditableField($event, dataItem, data, field.name)" required class="form-control" type="number" [ngStyle]="{'text-align': field.align ? field.align : 'left'}">
+                      </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'string'">
+                      <mat-form-field>
+                        <input matInput [(ngModel)]="dataItem[field.name]" (change)="onChangeEditableField($event, dataItem, data, field.name)" required class="form-control" [ngStyle]="{'text-align': field.align ? field.align : 'left'}">
+                      </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'date'">
+                      <mat-form-field>
+                        <input matInput [matDatepicker]="picker" [(ngModel)]="dataItem[field.name]" class="form-control" (dateChange)="onChangeEditableField($event, dataItem, data, field)" [ngStyle]="{'text-align': field.align ? field.align : 'left'}">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'enum'">
+                      <mat-form-field>
+                        <mat-select [(ngModel)]="dataItem[field.name]">
+                          <mat-option *ngFor="let selectDataItem of selectDataSources[field.name]" [value]="selectDataItem[field.name]"> {{ selectDataItem.name }} </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'boolean'">
+                        <mat-checkbox [(ngModel)]="dataItem[field.name]" (change)="onChangeEditableField($event, dataItem, data, field.name)"></mat-checkbox>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      <mat-form-field>
+                        <input matInput [(ngModel)]="dataItem[field.name]" required class="form-control" (change)="onChangeEditableField($event, dataItem, data, field.name)" [ngStyle]="{'text-align': field.align ? field.align : 'left'}">
+                      </mat-form-field>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngIf="field.name == 'action' && field.button && field.button.menuItems && field.button.menuItems.length && field.display && field.display({dataItem: dataItem, field: field})">
+                <button mat-icon-button color="primary" (click)="field.button.onClick ? field.button.onClick($event, dataItem) : null;" [matMenuTriggerFor]="menu">
+                  <mat-icon>{{field.button.name}}</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <ng-container *ngFor="let item of field.button.menuItems">
+                    <button mat-menu-item *ngIf="item.display && item.display({dataItem: dataItem, field: field})" (click)="item.onClick ? item.onClick($event, dataItem) : openUpdateModal($event, dataItem, properties.fields)">
+                      <mat-icon>{{item.name}}</mat-icon>
+                      <span>{{item.text}}</span>
+                    </button>
+                  </ng-container>
+                </mat-menu>
+              </ng-container>
+
+              <ng-container *ngIf="field.name == 'action' && !field.button.menuItems && field.button.name != 'edit'">
+                <button mat-icon-button color="primary" (click)="field.button.onClick ? field.button.onClick($event, dataItem) : null;">
+                  <mat-icon>{{ field.button.name }}</mat-icon>
+                </button>
+              </ng-container>
+
+              <ng-container *ngIf="field.name == 'action' && !field.button.menuItems && field.button.name == 'edit' && (properties.editable.mode == 'popup' || properties.editable.mode === 'multiple')">
+                <button mat-icon-button color="primary" (click)="!field.button.onClick ? openUpdateModal($event, dataItem, properties.fields) : field.button.onClick($event, dataItem, properties.fields)">
+                  <mat-icon>{{ field.button.name }}</mat-icon>
+                </button>
+              </ng-container>
+              
+            </td>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    
+      <ng-container *ngFor="let dataItem of [{}];">
+        <ng-container *ngFor="let field of properties.fields;">
+          <ng-container *ngIf="field && field.display">
+            <ng-container matColumnDef="{{field.name + '-new'}}" [stickyEnd]="field.name == 'action'">
+              <th mat-header-cell *matHeaderCellDef [ngStyle]="{'text-align': field.align ? field.align : 'left'}">
+                <ng-container *ngIf="field.name != 'action' && field.required">
+                  <ng-container [ngSwitch]="field.type">
+                      <ng-container *ngSwitchCase="'number'">
+                        <mat-form-field>
+                          <input matInput [(ngModel)]="dataItem[field.name]" required class="form-control" type="number" [ngStyle]="{'text-align': field.align ? field.align : 'left'}">
+                        </mat-form-field>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'string'">
+                        <mat-form-field>
+                          <input matInput [(ngModel)]="dataItem[field.name]" required class="form-control" [ngStyle]="{'text-align': field.align ? field.align : 'left'}">
+                        </mat-form-field>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'date'">
+                        <mat-form-field>
+                          <input matInput [matDatepicker]="picker" [(ngModel)]="dataItem[field.name]" class="form-control" [ngStyle]="{'text-align': field.align ? field.align : 'left'}">
+                          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                          <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'enum'">
+                        <mat-form-field>
+                          <mat-select [(ngModel)]="dataItem[field.name]">
+                            <mat-option *ngFor="let selectDataItem of selectDataSources[field.name]"  [value]="selectDataItem[field.name]"> {{ selectDataItem.name }} </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'boolean'">
+                          <mat-checkbox [(ngModel)]="dataItem[field.name]"></mat-checkbox>
+                      </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        <mat-form-field>
+                          <input matInput [(ngModel)]="dataItem[field.name]" required class="form-control" [ngStyle]="{'text-align': field.align ? field.align : 'left'}">
+                        </mat-form-field>
+                      </ng-container>
+                  </ng-container>
+                </ng-container>
+                
+
+                <button mat-icon-button color="primary" *ngIf="field.name == 'action'" (click)="onClickButtonSaveNewRow($event, dataItem, data)">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </th>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true;"></tr>
+      <tr mat-header-row *matHeaderRowDef="newRowDisplayedColumns;" [ngStyle]="{'display': newRow ? 'table-row' : 'none'}"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <mat-paginator [length]="pageOptions.totalCount" [pageSize]="pageOptions.pageSize" [pageSizeOptions]="pageOptions.pageSizeOptions" showFirstLastButtons class="app-sticky-paginator"></mat-paginator>
+</div>

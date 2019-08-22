@@ -1,0 +1,107 @@
+table {
+  width: 100%;
+}
+
+.app-table-container {
+  height: 100%;
+  overflow: auto;
+}
+
+.app-sticky-paginator {
+  bottom: 0px;
+  position: sticky;
+  z-index: 10;
+}
+
+::ng-deep table .mat-form-field:not(.ng-invalid):not(.mat-focused):not(.ng-dirty) .mat-form-field-underline, 
+::ng-deep table .mat-form-field:not(.ng-invalid):not(.mat-focused):not(.ng-dirty) .mat-form-field-ripple {
+  background-color: transparent !important;
+}
+
+::ng-deep table .mat-form-field.ng-dirty:not(.ng-invalid) .mat-form-field-underline, 
+::ng-deep table .mat-form-field.ng-dirty:not(.ng-invalid) .mat-form-field-ripple,
+tr:hover ::ng-deep table .mat-form-field:not(.ng-dirty) .mat-form-field-underline, 
+tr:hover ::ng-deep table .mat-form-field:not(.ng-dirty) .mat-form-field-ripple {
+  background-color: #3f51b5 !important;
+}
+
+::ng-deep table .mat-form-field-appearance-legacy .mat-form-field-underline {
+  bottom: 5px;
+}
+
+::ng-deep table .mat-form-field-appearance-legacy .mat-form-field-wrapper {
+  padding-bottom: 8px;
+}
+
+::ng-deep .mat-paginator-page-size-select .mat-form-field-wrapper {
+  padding-bottom: 1.25em !important;
+}
+
+mat-toolbar button {
+  margin-left: 10px;
+}
+
+td.mat-cell {
+  min-width: 180px;
+  padding-right: 20px;
+}
+
+th.mat-header-cell:not(.cdk-column-action):not(.cdk-column-action-new) {
+  min-width: 180px;
+  padding-right: 20px;
+}
+
+.table-wrapper {
+  overflow: auto;
+}
+
+.grid-action-button {
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  padding-right: 0px !important;
+}
+
+th.mat-header-cell:last-of-type {
+  padding-right: 0px !important;
+}
+
+td.grid-action-button > button {
+  display: none;
+}
+
+tr:hover td.grid-action-button > button {
+  display: inline-block;
+}
+
+input.mat-input-element {
+  height: 100%;
+}
+
+::ng-deep .toolbar-search {
+  height: 64px;
+
+  mat-icon {
+    position: absolute;
+    bottom: 0px;
+    right: 0;
+  }
+
+  mat-toolbar {
+    color: rgba(0,0,0,.54);
+  }
+
+  .mat-form-field-appearance-legacy .mat-form-field-label {
+    color: rgba(0,0,0,.54);
+  }
+
+  .mat-form-field-prefix {
+    margin-left: 28px;
+  }
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
