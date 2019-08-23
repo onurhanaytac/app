@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const UserService = require('../services/user.service');
-const auth = require('../middlewares/auth');
 
 router.post('/create', (req, res) => {
     const user = UserService.create(req.body);
@@ -12,13 +11,12 @@ router.post('/create', (req, res) => {
     });
 });
 
-router.get('/read', auth, (req, res) => {
+router.get('/read', (req, res) => {
     const users = UserService.read(req.query);
 
     users.then(_users => {
         res.status(200).send({ success: true, _users });
     }).catch(error => {
-        console.log("here error")
         return res.status(400).send({ success: false, error: error.message });
     });
 });

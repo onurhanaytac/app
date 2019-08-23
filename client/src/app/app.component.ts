@@ -45,7 +45,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd && this.mobileQuery && this.mobileQuery.matches) {
-        this.sidenav.close();
+        // this.sidenav.close();
       }
     });
   }

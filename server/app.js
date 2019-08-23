@@ -1,14 +1,13 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-var cors = require('cors')
-// const logger = require('morgan');
+const cors = require('cors');
 const dotenv = require('dotenv');
-const api = require('./routes/api');
+const api = require('./routes/api.route');
 
 dotenv.config();
 
-app.use(cors());
+app.use(cors({ exposedHeaders: ['access_token'] }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -17,10 +16,13 @@ app.use('/', (req, res) => {
     res.status(401).send('Bad request!');
 });
 
-mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useFindAndModify: false }, () => {
-    console.log('Connected to DB');
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useFindAndModify: false }, (err, db) => {
+    if (err) {
+        return console.log(err);
+    }
+    console.log(`Database connection on ${process.env.MONGODB_URL}`);
 });
 
-app.listen(3000, () => {
-    console.log('Server listening on port 3000')
+app.listen(process.env.PORT, () => {
+    console.log(`Server listening on port ${process.env.PORT}`);
 });

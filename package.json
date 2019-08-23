@@ -18,8 +18,6 @@
   },
   "homepage": "https://github.com/onurhanaytac/app#readme",
   "dependencies": {
-    "@angular/material-moment-adapter": "^8.1.3",
-    "concurrently": "^4.1.2",
-    "cors": "^2.8.5"
+    "concurrently": "^4.1.2"
   }
 }

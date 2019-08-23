@@ -15,22 +15,32 @@ export class LoginComponent implements OnInit {
   constructor(private router: Router, private http: HttpClient) { }
 
   login() {
-    console.log('login');
+    this.http.post('http://localhost:3000/api/auth/login',
+    { email: this.username, password: this.password },
+    { observe: 'response' }).subscribe(result => {
 
-    this.http.post('http://localhost:3000/api/auth/login', { email: this.username, password: this.password }).subscribe(result => {
-      this.http.get('http://localhost:3000/api/user/read').subscribe(_result => {
-      },
-      error => {
-      });
+      this.router.navigate(['user']);
+      // const bearer = result.headers.get('access_token');
+      // const header = new HttpHeaders().set('Authorization', `Bearer ${bearer}`);
+
+      // this.http.get('http://localhost:3000/api/user/read', { headers: header }).subscribe(response => {
+      //   console.log(response);
+      // });
+    });
+  }
+
+  register() {
+    console.log('register');
+    this.http.post('http://localhost:3000/api/auth/register', { email: this.username, password: this.password }).subscribe(result => {
+      console.log(result);
     },
     error => {
     });
-
     // this.router.navigate(['user']);
   }
 
+
   ngOnInit() {
-    console.log('here');
   }
 
 }
