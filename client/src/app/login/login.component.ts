@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
   register() {
     console.log('register');
     this.http.post('http://localhost:3000/api/auth/register', { email: this.username, password: this.password }).subscribe(result => {
-      console.log(result);
+
     },
     error => {
     });
@@ -41,6 +41,7 @@ export class LoginComponent implements OnInit {
 
 
   ngOnInit() {
+
   }
 
 }
